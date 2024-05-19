@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 src/ChatApi/appsettings.Development.json
 src/ExpertsIndexer/hostsettings.json
+src/ExpertsIndexer/output.md
