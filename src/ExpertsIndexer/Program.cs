@@ -17,10 +17,14 @@ var host = Host.CreateDefaultBuilder(args)
         var configuration = hostContext.Configuration;
 
         services.AddApplicationOptions(configuration);
-        services.AddMicrosoftGraphForApplication(configuration);
+        services.AddMicrosoftGraphForAdminUser(); // MS Graph Profile beta endpoint does not support application permissions
         services.AddKernelMemory(configuration);
+        services.AddSingleton<UserResumeService>();
 
         services.AddLogging(configure => configure.AddConsole());
 
         services.AddHostedService<ExpertsIndexerHostedService>();
-    });
+    })
+    .Build();
+
+host.Run();

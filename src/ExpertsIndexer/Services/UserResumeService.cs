@@ -2,14 +2,9 @@
 
 namespace ExpertsIndexer;
 
-public class UserResumeService
+public class UserResumeService(GraphServiceClient graphServiceClient)
 {
-    private readonly GraphServiceClient _graphServiceClient;
-
-    public UserResumeService(GraphServiceClient graphServiceClient)
-    {
-        _graphServiceClient = graphServiceClient;
-    }
+    private readonly GraphServiceClient _graphServiceClient = graphServiceClient;
 
     public async Task<IEnumerable<ExpertResume>> GetUserResumes()
     {

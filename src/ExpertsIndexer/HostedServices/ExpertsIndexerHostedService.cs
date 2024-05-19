@@ -16,11 +16,13 @@ public class ExpertsIndexerHostedService(
 
         foreach (var userResume in userResumes)
         {
+            //Console.WriteLine(userResume.AsMarkdown());
             Console.Write($"Indexing User: {userResume.Name} ({userResume.Mail}) ...");
 
             var document = new Document(userResume.Id)
-                .AddStream($"{userResume.Name}__{userResume.Mail}.md",
-                userResume.AsMarkdownStream());
+                .AddStream(
+                    fileName: $"{userResume.Id}__{userResume.Mail}__resume.md",
+                    content: userResume.AsMarkdownStream());
 
             await _memoryServerless.ImportDocumentAsync(
                 document,
@@ -33,6 +35,7 @@ public class ExpertsIndexerHostedService(
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("ExpertsIndexerHostedService is stopping.");
+        return Task.CompletedTask;
     }
 }
