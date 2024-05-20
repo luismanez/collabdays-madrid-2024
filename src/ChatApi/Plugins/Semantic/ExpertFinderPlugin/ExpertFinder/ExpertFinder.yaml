@@ -1,0 +1,18 @@
+name: ExpertFinder
+template: |
+  Given the following list of People in a Markdown format that are experts in a certain field,
+  find the expert or experts that are most relevant to the given question or project.
+  {{memory.ask $input}}
+  Question: {{$input}}
+  If the answer is empty say "I don't know", otherwise reply with a preview of the answer, truncated to 15 words.
+template_format: semantic-kernel
+description: A function that finds you company people that are experts in a certain field, or that have worked in a specific project that is related to the question
+input_variables:
+  - name: input
+    description: The question or project to find experts about.
+    is_required: true
+output_variable:
+  description: A list of people that can help with the question or project.
+execution_settings:
+  default:
+    temperature: 0.1

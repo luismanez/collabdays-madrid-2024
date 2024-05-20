@@ -1,0 +1,14 @@
+name: FriendlyChat
+template: |
+  Question: {{$input}}
+template_format: semantic-kernel
+description: A function that finds you company people that are experts in a certain field, or that have worked in a specific project that is related to the question
+input_variables:
+  - name: input
+    description: User input
+    is_required: true
+output_variable:
+  description: The answer from the system.
+execution_settings:
+  default:
+    temperature: 0.3

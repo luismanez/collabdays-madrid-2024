@@ -7,13 +7,31 @@
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <NoWarn>SKEXP0001,SKEXP0011,SKEXP0060,SKEXP0004,SKEXP0101,SKEXP0010</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="FastEndpoints" Version="5.25.0" />
     <PackageReference Include="FastEndpoints.Swagger" Version="5.25.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.12.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.PromptTemplates.Handlebars" Version="1.12.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.12.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.12.0-preview" />
     <PackageReference Include="Microsoft.KernelMemory.Core" Version="0.60.240517.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Plugins/Semantic/ExpertFinderPlugin/ExpertFinder/ExpertFinder.yaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Plugins/**/*.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <LogicalName>ChatAPI.ExpertFinder.yaml</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
