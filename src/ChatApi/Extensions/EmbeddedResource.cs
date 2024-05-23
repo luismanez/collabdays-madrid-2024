@@ -27,7 +27,7 @@ internal static class EmbeddedResource
             throw new Exception($"[{s_namespace}] {fileName} assembly not found");
 
         // Resources are mapped like types, using the namespace and appending "." (dot) and the file name
-        var resourceName = $"{s_namespace}." + fileName;
+        var resourceName = $"{s_namespace}.{fileName}";
         using Stream resource =
             assembly.GetManifestResourceStream(resourceName) ??
             throw new Exception($"{resourceName} resource not found");

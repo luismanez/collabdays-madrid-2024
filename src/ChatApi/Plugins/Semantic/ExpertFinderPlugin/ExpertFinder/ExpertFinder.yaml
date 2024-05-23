@@ -2,7 +2,7 @@ name: ExpertFinder
 template: |
   Given the following list of People in a Markdown format that are experts in a certain field,
   find the expert or experts that are most relevant to the given question or project.
-  {{memory.ask $input}}
+  {{memory.search query=$input limit='2'}}
   Question: {{$input}}
   If the answer is empty say "I don't know", otherwise reply with a preview of the answer, truncated to 15 words.
 template_format: semantic-kernel

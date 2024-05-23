@@ -7,23 +7,29 @@ namespace ChatApi;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSemanticKernelWithChatCompletionsAndEmbeddingGeneration(
-        this IServiceCollection services)
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        var serviceProvider = services.BuildServiceProvider();
+        services.Configure<OpenAiOptions>(configuration.GetSection("OpenAi"));
 
-        var openAiOptions = serviceProvider.GetRequiredService<IOptions<OpenAiOptions>>()!.Value;
+        services.AddScoped(sp =>
+        {
+            var options = sp.GetRequiredService<IOptionsMonitor<OpenAiOptions>>().CurrentValue;
 
-        var kernelBuilder = services.AddKernel();
-        kernelBuilder.Services
-            .AddAzureOpenAIChatCompletion(
-                endpoint: openAiOptions.ApiEndpoint,
-                deploymentName: openAiOptions.ChatModelName,
-                apiKey: openAiOptions.ApiKey)
-            .AddAzureOpenAITextEmbeddingGeneration(
-                endpoint: openAiOptions.ApiEndpoint,
-                deploymentName: openAiOptions.EmbeddingsModelName,
-                apiKey: openAiOptions.ApiKey
-            );
+            var factory = sp.GetRequiredService<IHttpClientFactory>();
+
+            var builder = Kernel.CreateBuilder();
+            builder.AddAzureOpenAIChatCompletion(
+                options.ChatModelName,
+                options.ApiEndpoint,
+                options.ApiKey,
+                httpClient: factory.CreateClient()); // workaround for tracing requests using Fiddler
+
+            builder.Services.AddLogging();
+
+            var kernel = builder.Build();
+            return kernel;
+        });
 
         return services;
     }
@@ -32,22 +38,31 @@ public static class ServiceCollectionExtensions
             this IServiceCollection services,
             IConfiguration configuration)
     {
-        var azureOpenAITextConfig = new AzureOpenAIConfig();
-        var azureOpenAIEmbeddingConfig = new AzureOpenAIConfig();
-        var azureAISearchConfig = new AzureAISearchConfig();
+        services.AddSingleton(sp =>
+        {
+            var azureOpenAITextConfig = new AzureOpenAIConfig();
+            var azureOpenAIEmbeddingConfig = new AzureOpenAIConfig();
+            var azureAISearchConfig = new AzureAISearchConfig();
 
-        configuration
-            .BindSection("KernelMemory:Services:AzureOpenAIText", azureOpenAITextConfig)
-            .BindSection("KernelMemory:Services:AzureOpenAIEmbedding", azureOpenAIEmbeddingConfig)
-            .BindSection("KernelMemory:Services:AzureAISearch", azureAISearchConfig);
+            configuration
+                .BindSection("KernelMemory:Services:AzureOpenAIText", azureOpenAITextConfig)
+                .BindSection("KernelMemory:Services:AzureOpenAIEmbedding", azureOpenAIEmbeddingConfig)
+                .BindSection("KernelMemory:Services:AzureAISearch", azureAISearchConfig);
 
-        var memory = new KernelMemoryBuilder()
-                        .WithAzureOpenAITextEmbeddingGeneration(azureOpenAIEmbeddingConfig)
-                        .WithAzureOpenAITextGeneration(azureOpenAITextConfig)
-                        .WithAzureAISearchMemoryDb(azureAISearchConfig)
-                        .Build<MemoryServerless>();
+            var factory = sp.GetRequiredService<IHttpClientFactory>();
 
-        services.AddSingleton(memory);
+            var memory = new KernelMemoryBuilder()
+                            .WithAzureOpenAITextEmbeddingGeneration(
+                                config: azureOpenAIEmbeddingConfig,
+                                httpClient: factory.CreateClient())
+                            .WithAzureOpenAITextGeneration(
+                                config: azureOpenAITextConfig,
+                                httpClient: factory.CreateClient())
+                            .WithAzureAISearchMemoryDb(azureAISearchConfig)
+                            .Build<MemoryServerless>();
+
+            return memory;
+        });
 
         return services;
     }

@@ -1,17 +1,20 @@
 ﻿using FastEndpoints;
+using Microsoft.KernelMemory;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel.Planning.Handlebars;
-using Microsoft.SemanticKernel.PromptTemplates.Handlebars;
 
 namespace ChatApi;
 
 public class GetChatCompletionsEndpoint : Endpoint<GetChatCompletionsRequest, GetChatCompletionsResponse>
 {
     private readonly Kernel _kernel;
+    private readonly MemoryServerless _kernelMemory;
 
-    public GetChatCompletionsEndpoint(Kernel kernel)
+    public GetChatCompletionsEndpoint(
+        Kernel kernel,
+        MemoryServerless kernelMemory)
     {
+        _kernelMemory = kernelMemory;
         _kernel = kernel;
     }
 
@@ -25,9 +28,20 @@ public class GetChatCompletionsEndpoint : Endpoint<GetChatCompletionsRequest, Ge
     {
         var expertFinderYaml = EmbeddedResource.Read("ExpertFinder.yaml");
         var expertFinderFunction = _kernel.CreateFunctionFromPromptYaml(expertFinderYaml);
-        _kernel.CreatePluginFromFunctions("ExpertFinderPlugin", [expertFinderFunction]);
+        _kernel.ImportPluginFromFunctions("ExpertFinderPlugin", [expertFinderFunction]);
 
-        var planner = new HandlebarsPlanner(new HandlebarsPlannerOptions() { AllowLoops = true });
+        var plugin = new MemoryPlugin(_kernelMemory,
+                                      waitForIngestionToComplete: true,
+                                      defaultIndex: "CompanyExperts");
+
+        _kernel.ImportPluginFromObject(plugin, "memory");
+
+        var planner = new HandlebarsPlanner(
+            new HandlebarsPlannerOptions()
+            {
+                AllowLoops = true,
+                GetAdditionalPromptContext = () => Task.FromResult("If you cannot find any helper to achieve user's goal, just answer your knowledge (LLM).")
+            });
 
         var plan = await planner.CreatePlanAsync(_kernel, req.Input!, cancellationToken: ct);
 

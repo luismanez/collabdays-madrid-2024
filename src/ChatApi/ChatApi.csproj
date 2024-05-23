@@ -20,7 +20,20 @@
     <PackageReference Include="Microsoft.SemanticKernel.PromptTemplates.Handlebars" Version="1.12.0" />
     <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.12.0" />
     <PackageReference Include="Microsoft.SemanticKernel.Planners.Handlebars" Version="1.12.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.12.0-alpha" />
     <PackageReference Include="Microsoft.KernelMemory.Core" Version="0.60.240517.1" />
+    <PackageReference Include="Microsoft.KernelMemory.SemanticKernelPlugin" Version="0.60.240517.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -28,9 +41,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Plugins/**/*.yaml">
+    <EmbeddedResource Include="Plugins/Semantic/ExpertFinderPlugin/ExpertFinder/ExpertFinder.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <LogicalName>ChatAPI.ExpertFinder.yaml</LogicalName>
+      <LogicalName>ChatApi.ExpertFinder.yaml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 

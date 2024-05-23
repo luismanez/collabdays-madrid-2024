@@ -8,7 +8,9 @@ builder.Services
    .AddFastEndpoints()
    .SwaggerDocument();
 
-builder.Services.AddSemanticKernelWithChatCompletionsAndEmbeddingGeneration();
+builder.Services.AddHttpClient();
+
+builder.Services.AddSemanticKernelWithChatCompletionsAndEmbeddingGeneration(builder.Configuration);
 builder.Services.AddKernelMemory(builder.Configuration);
 
 var app = builder.Build();
