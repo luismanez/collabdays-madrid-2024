@@ -30,6 +30,10 @@ public class GetChatCompletionsEndpoint : Endpoint<GetChatCompletionsRequest, Ge
         var expertFinderFunction = _kernel.CreateFunctionFromPromptYaml(expertFinderYaml);
         _kernel.ImportPluginFromFunctions("ExpertFinderPlugin", [expertFinderFunction]);
 
+        var friendlyChatYaml = EmbeddedResource.Read("FriendlyChat.yaml");
+        var friendlyChatFunction = _kernel.CreateFunctionFromPromptYaml(friendlyChatYaml);
+        _kernel.ImportPluginFromFunctions("FriendlyChatPlugin", [friendlyChatFunction]);
+
         var plugin = new MemoryPlugin(_kernelMemory,
                                       waitForIngestionToComplete: true,
                                       defaultIndex: "CompanyExperts");

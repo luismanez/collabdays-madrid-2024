@@ -38,12 +38,18 @@
 
   <ItemGroup>
     <None Remove="Plugins/Semantic/ExpertFinderPlugin/ExpertFinder/ExpertFinder.yaml" />
+    <None Remove="Plugins/Semantic/FiendlyChatPlugin/FiendlyChat/FiendlyChat.yaml" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Plugins/Semantic/ExpertFinderPlugin/ExpertFinder/ExpertFinder.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <LogicalName>ChatApi.ExpertFinder.yaml</LogicalName>
+    </EmbeddedResource>
+
+    <EmbeddedResource Include="Plugins/Semantic/FriendlyChatPlugin/FriendlyChat/FriendlyChat.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <LogicalName>ChatApi.FriendlyChat.yaml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 

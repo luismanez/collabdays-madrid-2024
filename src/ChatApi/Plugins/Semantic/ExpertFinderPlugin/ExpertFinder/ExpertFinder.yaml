@@ -4,7 +4,7 @@ template: |
   find the expert or experts that are most relevant to the given question or project.
   {{memory.search query=$input limit='2'}}
   Question: {{$input}}
-  If the answer is empty say "I don't know", otherwise reply with a preview of the answer, truncated to 15 words.
+  If the answer is empty say "I don't know".
 template_format: semantic-kernel
 description: A function that finds you company people that are experts in a certain field, or that have worked in a specific project that is related to the question
 input_variables:
