@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "18.20.3",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.12.0"
+    },
+    "version": "1.19.0",
+    "libraryName": "insight-chat-webpart",
+    "libraryId": "b52e64fa-bcef-4429-abab-ec08403615b7",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "InsightChat Webpart",
+    "solutionShortDescription": "InsightChat Webpart description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

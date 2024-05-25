@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "insight-chat-webpart-client-side-solution",
+    "id": "b52e64fa-bcef-4429-abab-ec08403615b7",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.19.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "InsightChat Webpart description"
+      },
+      "longDescription": {
+        "default": "InsightChat Webpart description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "insight-chat-webpart Feature",
+        "description": "The feature that activates elements of the insight-chat-webpart solution.",
+        "id": "6384ce8d-2ea4-47fb-b52e-c44f315f7d74",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/insight-chat-webpart.sppkg"
+  }
+}

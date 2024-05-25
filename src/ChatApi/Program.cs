@@ -8,6 +8,16 @@ builder.Services
    .AddFastEndpoints()
    .SwaggerDocument();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddHttpClient();
 
 builder.Services.AddSemanticKernelWithChatCompletionsAndEmbeddingGeneration(builder.Configuration);
@@ -16,6 +26,8 @@ builder.Services.AddKernelMemory(builder.Configuration);
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseFastEndpoints()
    .UseSwaggerGen();

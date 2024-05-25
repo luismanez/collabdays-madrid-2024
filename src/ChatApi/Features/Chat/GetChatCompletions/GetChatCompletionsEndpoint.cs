@@ -44,7 +44,7 @@ public class GetChatCompletionsEndpoint : Endpoint<GetChatCompletionsRequest, Ge
             new HandlebarsPlannerOptions()
             {
                 AllowLoops = true,
-                GetAdditionalPromptContext = () => Task.FromResult("If you cannot find any helper to achieve user's goal, just answer your knowledge (LLM).")
+                GetAdditionalPromptContext = () => Task.FromResult("If you cannot find any better helper to achieve user's goal, use the FriendlyChat plugin/function/helper.")
             });
 
         var plan = await planner.CreatePlanAsync(_kernel, req.Input!, cancellationToken: ct);
@@ -53,8 +53,8 @@ public class GetChatCompletionsEndpoint : Endpoint<GetChatCompletionsRequest, Ge
 
         var response = new GetChatCompletionsResponse
         {
-            ChatAnswer = result,
-            TokenTotalUsage = 10
+            UserQuery = req.Input,
+            ChatAnswer = result
         };
 
         await SendAsync(response, cancellation: ct);
