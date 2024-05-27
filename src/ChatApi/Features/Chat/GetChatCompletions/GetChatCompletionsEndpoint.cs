@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using Microsoft.KernelMemory;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Planning.Handlebars;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 namespace ChatApi;
 
@@ -28,33 +28,27 @@ public class GetChatCompletionsEndpoint : Endpoint<GetChatCompletionsRequest, Ge
     {
         var expertFinderYaml = EmbeddedResource.Read("ExpertFinder.yaml");
         var expertFinderFunction = _kernel.CreateFunctionFromPromptYaml(expertFinderYaml);
-        _kernel.ImportPluginFromFunctions("ExpertFinderPlugin", [expertFinderFunction]);
-
-        var friendlyChatYaml = EmbeddedResource.Read("FriendlyChat.yaml");
-        var friendlyChatFunction = _kernel.CreateFunctionFromPromptYaml(friendlyChatYaml);
-        _kernel.ImportPluginFromFunctions("FriendlyChatPlugin", [friendlyChatFunction]);
+        _kernel.ImportPluginFromFunctions("ExpertFinderPlugin", [expertFinderFunction]); // Adding ExpertFinder plugin
 
         var plugin = new MemoryPlugin(_kernelMemory,
                                       waitForIngestionToComplete: true,
                                       defaultIndex: "CompanyExperts");
 
-        _kernel.ImportPluginFromObject(plugin, "memory");
+        _kernel.ImportPluginFromObject(plugin, "memory"); // Adding KernelMemory plugin
 
-        var planner = new HandlebarsPlanner(
-            new HandlebarsPlannerOptions()
-            {
-                AllowLoops = true,
-                GetAdditionalPromptContext = () => Task.FromResult("If you cannot find any better helper to achieve user's goal, use the FriendlyChat plugin/function/helper.")
-            });
-
-        var plan = await planner.CreatePlanAsync(_kernel, req.Input!, cancellationToken: ct);
-
-        var result = await plan.InvokeAsync(_kernel, cancellationToken: ct);
+        var settings = new OpenAIPromptExecutionSettings
+        {
+            ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
+        };
+        var result = await _kernel.InvokePromptAsync<string>(
+            req.Input,
+            new(settings),
+            cancellationToken: ct);
 
         var response = new GetChatCompletionsResponse
         {
             UserQuery = req.Input,
-            ChatAnswer = result
+            ChatAnswer = result!
         };
 
         await SendAsync(response, cancellation: ct);

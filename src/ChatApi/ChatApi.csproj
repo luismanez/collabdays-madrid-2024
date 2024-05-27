@@ -46,11 +46,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <LogicalName>ChatApi.ExpertFinder.yaml</LogicalName>
     </EmbeddedResource>
-
-    <EmbeddedResource Include="Plugins/Semantic/FriendlyChatPlugin/FriendlyChat/FriendlyChat.yaml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <LogicalName>ChatApi.FriendlyChat.yaml</LogicalName>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
