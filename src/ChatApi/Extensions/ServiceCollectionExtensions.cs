@@ -17,15 +17,13 @@ public static class ServiceCollectionExtensions
             var options = sp.GetRequiredService<IOptionsMonitor<OpenAiOptions>>().CurrentValue;
 
             var factory = sp.GetRequiredService<IHttpClientFactory>();
-
+            
             var builder = Kernel.CreateBuilder();
             builder.AddAzureOpenAIChatCompletion(
                 options.ChatModelName,
                 options.ApiEndpoint,
                 options.ApiKey,
                 httpClient: factory.CreateClient()); // workaround for tracing requests using Fiddler
-
-            builder.Services.AddLogging();
 
             var kernel = builder.Build();
             return kernel;
@@ -40,26 +38,41 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton(sp =>
         {
-            var azureOpenAITextConfig = new AzureOpenAIConfig();
-            var azureOpenAIEmbeddingConfig = new AzureOpenAIConfig();
-            var azureAISearchConfig = new AzureAISearchConfig();
+            var azureOpenAiTextConfig = new AzureOpenAIConfig();
+            var azureOpenAiEmbeddingConfig = new AzureOpenAIConfig();
+            var azureAiSearchConfig = new AzureAISearchConfig();
 
             configuration
-                .BindSection("KernelMemory:Services:AzureOpenAIText", azureOpenAITextConfig)
-                .BindSection("KernelMemory:Services:AzureOpenAIEmbedding", azureOpenAIEmbeddingConfig)
-                .BindSection("KernelMemory:Services:AzureAISearch", azureAISearchConfig);
+                .BindSection("KernelMemory:Services:AzureOpenAIText", azureOpenAiTextConfig)
+                .BindSection("KernelMemory:Services:AzureOpenAIEmbedding", azureOpenAiEmbeddingConfig)
+                .BindSection("KernelMemory:Services:AzureAISearch", azureAiSearchConfig);
 
             var factory = sp.GetRequiredService<IHttpClientFactory>();
 
-            var memory = new KernelMemoryBuilder()
+            var kmBuilder = new KernelMemoryBuilder()
                             .WithAzureOpenAITextEmbeddingGeneration(
-                                config: azureOpenAIEmbeddingConfig,
+                                config: azureOpenAiEmbeddingConfig,
                                 httpClient: factory.CreateClient())
                             .WithAzureOpenAITextGeneration(
-                                config: azureOpenAITextConfig,
+                                config: azureOpenAiTextConfig,
                                 httpClient: factory.CreateClient())
-                            .WithAzureAISearchMemoryDb(azureAISearchConfig)
-                            .Build<MemoryServerless>();
+                            .WithAzureAISearchMemoryDb(azureAiSearchConfig);
+            
+            kmBuilder.Services.AddLogging(builder =>
+            {
+                builder.AddConsole();
+                
+                // builder.AddApplicationInsights(telemetryConfiguration =>
+                // {
+                //     // telemetryConfiguration.ConnectionString = configuration["ApplicationInsights:ConnectionString"];
+                //     telemetryConfiguration.InstrumentationKey = configuration["ApplicationInsights:InstrumentationKey"];
+                // }, loggerOptions =>
+                // {
+                //     //loggerOptions.FlushOnDispose = true;
+                // });
+            });
+                
+            var memory = kmBuilder.Build<MemoryServerless>();
 
             return memory;
         });

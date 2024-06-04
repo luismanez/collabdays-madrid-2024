@@ -9,12 +9,15 @@ public class GetChatCompletionsEndpoint : Endpoint<GetChatCompletionsRequest, Ge
 {
     private readonly Kernel _kernel;
     private readonly MemoryServerless _kernelMemory;
+    private readonly ILogger<GetChatCompletionsEndpoint> _logger;
 
     public GetChatCompletionsEndpoint(
         Kernel kernel,
-        MemoryServerless kernelMemory)
+        MemoryServerless kernelMemory,
+        ILogger<GetChatCompletionsEndpoint> logger)
     {
         _kernelMemory = kernelMemory;
+        _logger = logger;
         _kernel = kernel;
     }
 
@@ -26,6 +29,8 @@ public class GetChatCompletionsEndpoint : Endpoint<GetChatCompletionsRequest, Ge
 
     public override async Task HandleAsync(GetChatCompletionsRequest req, CancellationToken ct)
     {
+        _logger.LogInformation("Received chat request: {Input}", req.Input);
+
         var expertFinderYaml = EmbeddedResource.Read("ExpertFinder.yaml");
         var expertFinderFunction = _kernel.CreateFunctionFromPromptYaml(expertFinderYaml);
         _kernel.ImportPluginFromFunctions("ExpertFinderPlugin", [expertFinderFunction]); // Adding ExpertFinder plugin
