@@ -399,3 +399,9 @@ FodyWeavers.xsd
 src/ChatApi/appsettings.Development.json
 src/ExpertsIndexer/hostsettings.json
 src/ExpertsIndexer/output.md
+src/.idea/.idea.RocketMind.Community.CompanyExperts/.idea/.name
+src/.idea/.idea.RocketMind.Community.CompanyExperts/.idea/encodings.xml
+src/.idea/.idea.RocketMind.Community.CompanyExperts/.idea/indexLayout.xml
+src/.idea/.idea.RocketMind.Community.CompanyExperts/.idea/vcs.xml
+src/.idea/.idea.RocketMind.Community.CompanyExperts/.idea/.gitignore
+.DS_Store
