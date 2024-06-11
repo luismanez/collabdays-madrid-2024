@@ -42,24 +42,6 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddMicrosoftGraphForApplication(
-        this IServiceCollection services)
-    {
-        return services.AddSingleton<GraphServiceClient, GraphServiceClient>(serviceProvider =>
-        {
-            string[] graphDefaultScopes = ["https://graph.microsoft.com/.default"];
-
-            var azureAdOptions = serviceProvider.GetService<IOptions<AzureAdOptions>>()!.Value;
-
-            var clientSecretCredential = new ClientSecretCredential(
-               azureAdOptions.TenantId,
-               azureAdOptions.ClientId,
-               azureAdOptions.ClientSecret);
-
-            return new GraphServiceClient(clientSecretCredential, graphDefaultScopes);
-        });
-    }
-
     /// <summary>
     /// MS Graph Profile beta endpoint does not support application permissions.
     /// We need to use a admin user account. This is not recommended for production (only for demo purposes)
