@@ -1,0 +1,39 @@
+{
+    "Logging": {
+      "LogLevel": {
+        "Default": "Debug",
+        "System": "Warning",
+        "Microsoft": "Warning"
+      }
+    },
+    "AzureAd": {
+      "ClientId": "",
+      "ClientSecret": "",
+      "TenantId": "",
+      "UserName": "xxxx@tenant.onmicrosoft.com",
+      "Password": ""
+    },
+    "KernelMemory": {
+      "Services": {
+        "AzureOpenAIEmbedding": {
+          "Auth": "ApiKey",
+          "Endpoint": "https://xxxxx.openai.azure.com/",
+          "APIKey": "",
+          "Deployment": "text-embedding-ada-002"
+        },
+        "AzureOpenAIText": {
+          "Auth": "ApiKey",
+          "Endpoint": "https://xxxxx.openai.azure.com/",
+          "APIKey": "",
+          "Deployment": "gpt4-turbo-preview",
+          "MaxTokenTotal": 16384,
+          "MaxRetries": 10
+        },
+        "AzureAISearch": {
+          "Auth": "ApiKey",
+          "Endpoint": "https://xxxxxxx.search.windows.net",
+          "APIKey": ""
+        }
+      }
+    }
+  }

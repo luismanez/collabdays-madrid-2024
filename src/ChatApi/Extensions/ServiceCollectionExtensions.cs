@@ -10,19 +10,19 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<OpenAiOptions>(configuration.GetSection("OpenAi"));
+        var azureOpenAiTextConfig = new AzureOpenAIConfig();
+        configuration
+                .BindSection("KernelMemory:Services:AzureOpenAIText", azureOpenAiTextConfig);
 
         services.AddScoped(sp =>
         {
-            var options = sp.GetRequiredService<IOptionsMonitor<OpenAiOptions>>().CurrentValue;
-
             var factory = sp.GetRequiredService<IHttpClientFactory>();
-            
+
             var builder = Kernel.CreateBuilder();
             builder.AddAzureOpenAIChatCompletion(
-                options.ChatModelName,
-                options.ApiEndpoint,
-                options.ApiKey,
+                azureOpenAiTextConfig.Deployment,
+                azureOpenAiTextConfig.Endpoint,
+                azureOpenAiTextConfig.APIKey,
                 httpClient: factory.CreateClient()); // workaround for tracing requests using Fiddler
 
             var kernel = builder.Build();
@@ -57,11 +57,11 @@ public static class ServiceCollectionExtensions
                                 config: azureOpenAiTextConfig,
                                 httpClient: factory.CreateClient())
                             .WithAzureAISearchMemoryDb(azureAiSearchConfig);
-            
+
             kmBuilder.Services.AddLogging(builder =>
             {
                 builder.AddConsole();
-                
+
                 // builder.AddApplicationInsights(telemetryConfiguration =>
                 // {
                 //     // telemetryConfiguration.ConnectionString = configuration["ApplicationInsights:ConnectionString"];
@@ -71,7 +71,7 @@ public static class ServiceCollectionExtensions
                 //     //loggerOptions.FlushOnDispose = true;
                 // });
             });
-                
+
             var memory = kmBuilder.Build<MemoryServerless>();
 
             return memory;
